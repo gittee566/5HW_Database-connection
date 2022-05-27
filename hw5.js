@@ -1,7 +1,7 @@
 const express = require('express');
 const mysql = require('mysql2')
 const jwt = require('jsonwebtoken')
-const jwtsecret = ""
+const jwtsecret = "00"
 
 const sqlpool = mysql.createPool({
     namedPlaceholders: true,
@@ -17,10 +17,11 @@ sqlpool.query('select * from employee', (err, result) => {
 
 })
 
+
 const app = express();
 app.use(express.json());
-app.use((req, response, next) => {
 
+app.use((req, response, next) => {
     if (req.path == "/login") return next()
 
     const authheader = req.headers.authorization
@@ -36,9 +37,11 @@ app.use((req, response, next) => {
 })
 
 app.post('/login', (req, response) => {
-    if (req.body.user == "Tee123" && req.body.pass == "123456") {
+    // console.log(req.body.user);
+    // console.log(req.body.pass);
+    if (req.body.user == "Teerasak123" && req.body.pass == "123456") {
         console.log(`login pass`);
-        const token = jwt.sign({ username: "Tee123" }, jwtsecret)
+        const token = jwt.sign({ username: "Teerasak123" }, jwtsecret)
         console.log(token);
         return response.json({ token })
     }
@@ -84,6 +87,8 @@ app.post('/post', (req, response) => {
 
 app.put('/put', (req, response) => {
     if (!req.body.id ||
+        // !req.body.firstname ||
+        // !req.body.lastname ||
         !req.body.pos ||
         !req.body.phone ||
         !req.body.email
@@ -91,7 +96,7 @@ app.put('/put', (req, response) => {
         return response.status(404).send("Error invalid data");
     }
 
-    const sql = 'update employee set pos = :pos, phone= :phone, email = :email where id = :id'
+    const sql = 'update employee set pos = :pos, phone = :phone, email = :email where id = :id'
     sqlpool.query(sql, {
         id: req.body.id,
         pos: req.body.pos,
@@ -122,5 +127,5 @@ app.delete('/delete', (req, response) => {
 })
 
 app.listen(3000, () => {
-    console.log(`localhost on port: 3000`);
+    console.log(`Listening on port: 3000`);
 });
